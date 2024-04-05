@@ -1,25 +1,18 @@
-from praktikum.bun import Bun
 from praktikum.burger import Burger
-from praktikum.ingredient import Ingredient
-from praktikum.ingredient_types import INGREDIENT_TYPE_SAUCE
 
 
 class TestBurger:
-    def test_set_buns_correct_creation(self):
-        bun = Bun('TestBun', 100)
+    def test_set_buns_correct_creation(self, mock_bun):
         burger = Burger()
+        burger.set_buns(mock_bun)
 
-        burger.set_buns(bun)
+        assert burger.bun == mock_bun
 
-        assert burger.bun == bun
-
-    def test_add_ingredient_one_ingredient_correct_add(self):
+    def test_add_ingredient_one_ingredient_correct_add(self, mock_ingredient1):
         burger = Burger()
-        ingredient = Ingredient(INGREDIENT_TYPE_SAUCE, 'TestIngredientName', 100)
+        burger.add_ingredient(mock_ingredient1)
 
-        burger.add_ingredient(ingredient)
-
-        assert ingredient in burger.ingredients
+        assert mock_ingredient1 in burger.ingredients
 
     def test_remove_ingredient_correct_index_success_remove(self, burger):
         ingredient1 = burger.ingredients[0]
@@ -37,15 +30,26 @@ class TestBurger:
 
         assert burger.ingredients[0] == ingredient2 and burger.ingredients[1] == ingredient1
 
-    def test_get_price_success(self, burger):
-        bun = Bun('TestBun', 100)
-        burger.set_buns(bun)
+    def test_get_price_success(self, mock_bun, mock_ingredient1, mock_ingredient2):
+        burger = Burger()
+        burger.add_ingredient(mock_ingredient1)
+        burger.add_ingredient(mock_ingredient2)
+        burger.set_buns(mock_bun)
+
+        mock_bun.get_price.return_value = 100
+        mock_ingredient1.get_price.return_value = 100
+        mock_ingredient2.get_price.return_value = 100
 
         assert burger.get_price() == 400
 
-    def test_get_receipt_success(self, burger):
-        bun = Bun('TestBun', 100)
-        burger.set_buns(bun)
+    def test_get_receipt_success(self, mock_bun, mock_ingredient1, mock_ingredient2):
+        burger = Burger()
+        burger.add_ingredient(mock_ingredient1)
+        burger.add_ingredient(mock_ingredient2)
+        burger.set_buns(mock_bun)
+
+        mock_bun.get_price.return_value = 100
+        mock_ingredient1.get_price.return_value = 100
+        mock_ingredient2.get_price.return_value = 100
 
         assert 'Price: 400' in burger.get_receipt()
-
