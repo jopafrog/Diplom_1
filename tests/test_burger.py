@@ -48,8 +48,22 @@ class TestBurger:
         burger.add_ingredient(mock_ingredient2)
         burger.set_buns(mock_bun)
 
+        mock_bun.get_name.return_value = 'test bun'
         mock_bun.get_price.return_value = 100
+
+        mock_ingredient1.get_type.return_value = 'sauce'
+        mock_ingredient2.get_type.return_value = 'filling'
+        mock_ingredient1.get_name.return_value = 'test sauce'
+        mock_ingredient2.get_name.return_value = 'test filling'
         mock_ingredient1.get_price.return_value = 100
         mock_ingredient2.get_price.return_value = 100
 
-        assert 'Price: 400' in burger.get_receipt()
+        receipt = [
+            '(==== test bun ====)',
+            '= sauce test sauce =',
+            '= filling test filling =',
+            '(==== test bun ====)\n',
+            'Price: 400'
+        ]
+
+        assert '\n'.join(receipt) == burger.get_receipt()
